@@ -1260,9 +1260,14 @@ view: pareto {
 
       then ${dtappliprevsolprov_date}
 
+      when ${type_protection} = 'GQU' and (${gq38_putinplace_date} is null)
+
+      then date(1900,01,01)
+
       when ${type_protection} = 'GQU'
 
       then ${gq38_putinplace_date}
+
 
 
       else date(1900,01,01)
