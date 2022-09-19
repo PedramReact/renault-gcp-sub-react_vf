@@ -1412,6 +1412,7 @@ view: pareto {
     suggestions: ["avc","sns"]
   }
 
+
   dimension: Doublon {
     sql:
        case
@@ -1425,7 +1426,6 @@ view: pareto {
       end
       ;;
   }
-
   ##dimension: status_sns {
   ##type: yesno
   #filters:  If((Find('Doublon',[tags])=0) OR ([tags] Is Null),TRUE
