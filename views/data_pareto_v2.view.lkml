@@ -1417,10 +1417,10 @@ view: data_pareto_v2 {
        case
             when
               (NOT CONTAINS_SUBSTR(${data_pareto_v2.tags}   ,"Doublon")  OR  (${data_pareto_v2.tags} IS NULL))
+            then 'No'
+            when
+              (${id_ig} IS NOT NULL)
             then 'Yes'
-
-
-      else 'No'
 
       end
       ;;
