@@ -243,6 +243,8 @@ view: ig_2j {
       value: "nombre"
     }
   }
+
+  # test
   measure: robustesse_global_KPI {
     type: number
 
@@ -252,8 +254,7 @@ view: ig_2j {
     ${pourcentage_TP_global_avc_ROB_VS_KPI}
     {% elsif robustesse._parameter_value == 'Toutes_Robustesse' and  type_de_restitution._parameter_value == 'Vie_serie' and  type_de_rendu._parameter_value =='nombre' %}
     ${TP_global_avc_ROB_VS_KPI}
-
-      {% elsif robustesse._parameter_value == 'Robustesse_mini' and  type_de_restitution._parameter_value == 'Vie_serie' and  type_de_rendu._parameter_value =='pourcentage' %}
+   {% elsif robustesse._parameter_value == 'Robustesse_mini' and  type_de_restitution._parameter_value == 'Vie_serie' and  type_de_rendu._parameter_value =='pourcentage' %}
       ${pourcentage_TP_global_avc_ROB_mini_VS_KPI}
       {% elsif robustesse._parameter_value == 'Robustesse_mini' and  type_de_restitution._parameter_value == 'Vie_serie' and  type_de_rendu._parameter_value =='nombre' %}
       ${TP_global_avc_ROB_mini_VS_KPI}
