@@ -1260,9 +1260,14 @@ view: pareto {
 
       then ${dtappliprevsolprov_date}
 
+      when ${type_protection} = 'GQU' and (${gq38_putinplace_date} is null)
+
+      then date(1900,01,01)
+
       when ${type_protection} = 'GQU'
 
       then ${gq38_putinplace_date}
+
 
 
       else date(1900,01,01)
@@ -1407,6 +1412,7 @@ view: pareto {
     suggestions: ["avc","sns"]
   }
 
+
   dimension: Doublon {
     sql:
        case
@@ -1420,7 +1426,6 @@ view: pareto {
       end
       ;;
   }
-
   ##dimension: status_sns {
   ##type: yesno
   #filters:  If((Find('Doublon',[tags])=0) OR ([tags] Is Null),TRUE

@@ -246,6 +246,7 @@ view: data_pareto_v2 {
     sql: ${TABLE}.engine_index ;;
   }
 
+
   dimension: engine_type {
     type: string
     sql: ${TABLE}.engine_type ;;
@@ -1261,7 +1262,11 @@ view: data_pareto_v2 {
 
       then ${dtappliprevsolprov_date}
 
-      when ${type_protection} = 'GQU'
+      when ${type_protection} = 'GQU' and (${gq38_putinplace_date} is null)
+
+      then date(1900,01,01)
+
+       when ${type_protection} = 'GQU'
 
       then ${gq38_putinplace_date}
 
@@ -1413,10 +1418,10 @@ view: data_pareto_v2 {
        case
             when
               (NOT CONTAINS_SUBSTR(${data_pareto_v2.tags}   ,"Doublon")  OR  (${data_pareto_v2.tags} IS NULL))
-            then 'Yes'
-
-
-      else 'No'
+            then 'Sans Doublon'
+            when
+              (${id_ig} IS NOT NULL)
+            then 'Avec Doublon'
 
       end
       ;;
@@ -1635,5 +1640,18 @@ view: data_pareto_v2 {
   measure: Taux_Eff{
     type: number
     sql: if((max(${data_pareto_v2.efficiency_rate}) IS NOT NULL) ,max(${data_pareto_v2.efficiency_rate}), null )  ;;
+  }
+  ###########################################################################################
+  #Transfomrmer les index en type string
+  ###########################################################################################
+
+  dimension: Moteur_index {
+    type: string
+    sql: ${TABLE}.engine_index ;;
+  }
+
+  dimension: Boite_index {
+    type: string
+    sql: ${TABLE}.gearbox_index ;;
   }
 }
