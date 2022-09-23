@@ -642,6 +642,9 @@ view: data_pareto_v2 {
   }
 
 
+######################################################################"Les code Lookml ajoute par BAHA "
+
+# paramter garantie  pour les choix d'utilisateur
 
   parameter: garantie_year {
 
@@ -660,7 +663,7 @@ view: data_pareto_v2 {
     type: yesno
     sql: ${TABLE}.warranty_1 ;;
   }
-
+ # application de choix de garantie sur les look
   dimension: verification_garantie {
     sql:
        case when
@@ -680,13 +683,13 @@ view: data_pareto_v2 {
   }
 
 
-
+ # paramter nature d'incident  pour les choix d'utilisateur
 
   parameter: nature_d_incident {
     suggestions: ["All","DRG","FIC","D&F","DOF"]
   }
 
-
+# application de choix de nature d'incident sur les look
   dimension: verification_indice {
     sql:
        case when
@@ -711,34 +714,36 @@ view: data_pareto_v2 {
       ;;
   }
 
+#les dimension cacher utiliser dans les verification indice
   dimension: status_drg {
     type: yesno
-    #filters: [If([ig_has_drg] =TRUE",TRUE]
     sql:ig_has_drg = TRUE   ;;
   }
 
   dimension: status_fic {
     type: yesno
-    #when 'fic' then If([ig_has_fic]=TRUE,TRUE )
+
     sql: ig_has_fic = TRUE;;
   }
 
   dimension: status_DandF {
     type: yesno
-    #when 'detf' then If([ig_has_drg]=TRUE  and [ig_has_fic]=TRUE ,TRUE )
+
     sql:  (${TABLE}.ig_has_drg = TRUE and ${TABLE}.ig_has_fic = TRUE);;
   }
   dimension: status_DOF {
     type: yesno
-    #when 'dof' then If([ig_has_drg]=TRUE  or [ig_has_fic]=TRUE ,TRUE )
+
     sql:   ( ${TABLE}.ig_has_fic = TRUE or ${TABLE}.ig_has_drg = TRUE  );;
   }
 
-
+# paramter Couleurs incident pour les RVB
 
   parameter: Couleurs_incident {
     suggestions: ["R","V","G","B"]
   }
+
+  # Calcul de dimension RVB_APV
   dimension: calcule_RVB_APV_VP {
 
     #hidden: yes
@@ -761,7 +766,7 @@ view: data_pareto_v2 {
       ;;
 
   }
-
+  # Calcul de mesure cache pour le max RVB_APV
   #ABC VGR
   measure: max_RVB_APV_VP {
 
@@ -795,7 +800,7 @@ view: data_pareto_v2 {
 
   }
 
-
+  # Calcul caché pour la dimension RVB_Def
   dimension: ccalcul_RVB_Definitive_VP_v1{
 
     hidden: yes
@@ -849,7 +854,7 @@ view: data_pareto_v2 {
       end  ;;
 
   }
-
+# Calcul de max pour la measur  RVB_DEF
   measure: max_RVB_Definitive_VP {
 
     hidden: yes
@@ -885,7 +890,7 @@ view: data_pareto_v2 {
 
 
 
-
+ # Calcul de dimension RVB_Imm
 
   dimension: calcul_RVB_Immediate_VP {
 
@@ -924,6 +929,7 @@ view: data_pareto_v2 {
       ;;
   }
 
+# Calcul de max pour la mesure RVB_Imm
   #ABCD VBRG }
   measure: max_calcule_RVB_Immediate_VP {
     hidden: yes
@@ -960,7 +966,7 @@ view: data_pareto_v2 {
       ;;}
 
 
-
+# Calcul La date SOl_Ser_Def
 
   dimension: Calcul_Date_Solution_Serie_Definitive_VP {
 
@@ -989,14 +995,11 @@ view: data_pareto_v2 {
 
   }
 
+# Calcul Le max date de sol_ser_def et identifier les couleurs RVB dans la colonne
 
   measure: Date_Solution_Serie_Definitive_VP {
 
     type: date
-
-    ##timeframes: [raw,date,week,month,quarter,year]
-
-    #convert_tz: no
 
     sql: MAX(${Calcul_Date_Solution_Serie_Definitive_VP}) ;;
 
@@ -1022,6 +1025,7 @@ view: data_pareto_v2 {
       {% endif %} ;;}
 
 
+# Calcul La date SOl_APV
 
   measure: Calcul_Date_Solution_APV_VP {
 
@@ -1039,17 +1043,11 @@ view: data_pareto_v2 {
 
       end;;
 
-    #if(${pareto.cod_et_apv_prov}= 6 ,${pareto.datemaxapvprov_date},null);;
+    # Calcul Le max date de sol_APV et identifier les couleurs RVB dans la colonne
 
   } measure: Date_Solution_APV_VP {
 
     type: date
-
-    # type: time
-
-    # timeframes: [raw,date,week,month,quarter,year]
-
-    # convert_tz: no
 
     sql:max(${Calcul_Date_Solution_APV_VP})
 
@@ -1075,13 +1073,10 @@ view: data_pareto_v2 {
       {% endif %} ;;
   }
 
-
+# Calcul la dimension date sol_ser_IMM
 
   dimension: Calcul_Date_Solution_Serie_Immediate_VP {
 
-    # if ((${lbscodts} = 'SERIE PROVISOIRE' AND ${lbsstatusapp} = 5),${pareto.datephyreelap_date},
-
-    # if((${lbscodts} = 'SERIE PROVISOIRE' AND ${lbsstatusapp} = 0),${pareto.dtappliprevsolprov_date},date(1900,01,01) ))
 
     hidden: yes
 
@@ -1114,14 +1109,11 @@ view: data_pareto_v2 {
 
   }
 
+# Calcul Le max date de sol_ser_IMM et identifier les couleurs RVB dans la colonne
+
   measure: Date_Solution_Serie_Immediate_VP {
 
     type: date
-    # type: time
-
-    # timeframes: [raw,date,week,month,quarter,year]
-
-    # convert_tz: no
 
     sql: MAX(${Calcul_Date_Solution_Serie_Immediate_VP})
 
@@ -1150,7 +1142,7 @@ view: data_pareto_v2 {
 
   }
 
-
+# Calcul la nombre de jour
   dimension: Age {
     type : number
     sql: if(${data_pareto_v2.type_protection} ="LUP" ,
@@ -1165,7 +1157,7 @@ view: data_pareto_v2 {
   }
 
 
-
+# Calcul la dimension Site application pour LUP et GQU
   dimension: Site_Application_LUP_GQU  {
     type: string
     sql:
@@ -1173,14 +1165,14 @@ view: data_pareto_v2 {
   }
 
 
-
+# Calcul la dimension Code projet
   dimension: Code_Projet_Calcule {
     type: string
     sql:
       if((${lbscodpr} IS NOT NULL) ,${lbscodpr},${project_code});;
   }
 
-
+# Calcul la dimension de EC: FM: titre LUP
 
   dimension: EC_FM_Titre_LUP {
 
@@ -1200,7 +1192,7 @@ view: data_pareto_v2 {
 
 
 
-
+# Calcul la dimension Direction Traitement pour LUP et GQU
   dimension: Direction_Traitement_LUP_GQU {
     type: string
     sql:if(${data_pareto_v2.type_protection} = "GQU" , ${factory_manufacturing_vehicle_label_fr},
@@ -1210,7 +1202,7 @@ view: data_pareto_v2 {
           Concat(${data_pareto_v2.lbspoletrait},"/",${data_pareto_v2.lib_ident_pb}),${data_pareto_v2.lib_ident_pb}),${data_pareto_v2.lbspoletrait}),null));;
   }
 
-
+  # parameter nature de doublon pour les choix d'utilisateur
 
   parameter: nature_de_doublon {
     suggestions: ["avc","sns"]
@@ -1230,13 +1222,10 @@ view: data_pareto_v2 {
       ;;
   }
 
+ # Calcule de la dimension protection gardé pour les LUP et GQU
 
   dimension: Protection_garde{
 
-    # "case
-    #    when Max([type_protection]=""LUP"") OVER ([id_ig]) then ""LUP""
-    #    when Max([type_protection]=""GQU"") OVER ([id_ig]) then ""GQU""
-#end"
     sql: case when
           ${type_protection} = "LUP"
            then 'LUP'
@@ -1249,6 +1238,7 @@ view: data_pareto_v2 {
   }
 
 
+ # Calcule la measure IG
   measure:IG {
 
     type: count_distinct
@@ -1257,14 +1247,13 @@ view: data_pareto_v2 {
 
   }
   dimension:status_IG {
-    #sql:(${pimof_status} = TRUE and ${type_protection} = 'GQU') or  (${type_protection} = 'LUP' and  ${pimof_status} = TRUE and ${rob_ap} is not null);;
 
     type: yesno
     sql: (${type_protection} = ${Protection_garde} and (${type_protection} = "LUP") ) OR (${type_protection} = ${Protection_garde} AND (${type_protection} = "GQU"));;
   }
 
 
-
+# Measure de Numéro Question
 
   measure:Num_Question {
 
@@ -1280,7 +1269,7 @@ view: data_pareto_v2 {
 
   }
 
-
+# Calcule une measure de criticite Groupé : K1,K2,K3,A définir
 
   measure: Criticite_Groupee {
     type: string
@@ -1292,7 +1281,7 @@ view: data_pareto_v2 {
       ;;
   }
 
-
+# Calcule une measure de concatination pour le Customer_Effect_Failure_Mode_Formate
 
   measure: Customer_Effect_Failure_Mode_Formate {
     type: string
@@ -1310,55 +1299,26 @@ view: data_pareto_v2 {
       ;;
   }
 
-
-
-  measure:Cus_Eff_Fai_Mod_Form {
-    type: string
-
-    sql: case
-      when ${EC_FM_Titre_LUP} IS NOT NULL
-      then if(CONCAT("EC:",LEFT(${EC_FM_Titre_LUP} ,STRPOS(${EC_FM_Titre_LUP} ,"/" ) + if(STRPOS(${EC_FM_Titre_LUP} ,"/" ) = 0 , 0 , -1) ),"FM:",
-  SUBSTR(${EC_FM_Titre_LUP},STRPOS(${EC_FM_Titre_LUP} ,"/" ) +1)) = "EC: FM:","",
-  CONCAT("EC:",LEFT(${EC_FM_Titre_LUP} ,STRPOS(${EC_FM_Titre_LUP} ,"/" ) + if(STRPOS(${EC_FM_Titre_LUP} ,"/" ) = 0 , 0 , -1) )," FM:",
-  SUBSTR(${EC_FM_Titre_LUP},STRPOS(${EC_FM_Titre_LUP} ,"/" ) +1)))
-      else if((${lbsquestion} IS NULL) AND(${gq23_alertlabel} IS NOT NULL)  AND (${IG} IS NOT NULL),
-    CONCAT("Elément:",${gq41_elementcode},"  " ,${gq28_elementname}, " Incident:" ,${gq42_incidentcode} ,"  ",${gq30_incidentname}),
-    "")
-
-      end ;;
-
-  }
-
-
-  dimension: Max_Test {
-    sql:
-      Max(${LUP_MAX});;
-  }
-
+# Calcule une Dimension LUP MAX
 
   dimension: LUP_MAX {
 
     hidden: yes
     sql: if(${type_protection}= 'LUP', ${protection},null) ;;
   }
-  dimension: ig_test {
-    hidden: yes
-    # If((([type_protection]=[protection_gardé]) and ([LUP_max]=[protection])) or (([type_protection]=[protection_gardé]) and ([type_protection]="GQU")),[id_ig])
-    type: number
-    sql: case when (${data_pareto_v2.type_protection} = ${data_pareto_v2.Protection_garde} and ${data_pareto_v2.protection} = ${Max_Test} ) OR (${data_pareto_v2.type_protection} = ${data_pareto_v2.Protection_garde} AND (${data_pareto_v2.type_protection} = "GQU")) then ${id_ig} end  ;;
-  }
-  measure: nombe_de_cas {
-    type: count_distinct
-    sql: ${ig_test} ;;
+
+  dimension: Max_Test {
+    sql:
+      Max(${LUP_MAX});;
   }
 
-
+# Calcule une measure de Taux_EFF
 
   measure: Taux_Eff{
     type: number
     sql: if((max(${data_pareto_v2.efficiency_rate}) IS NOT NULL) ,max(${data_pareto_v2.efficiency_rate}), null )  ;;
   }
-
+#####################################################################" Fin de code Lookml ajoute par Baha "
 
 
 }
