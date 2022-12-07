@@ -13,29 +13,44 @@ view: vin_data {
     sql: ${TABLE}.order_id ;;
   }
 
+# La hiérarchie véhicule :  brand > model#
+
   dimension: brand {
     type: string
+
     sql: ${TABLE}.brand ;;
+    drill_fields: [model]
+    group_label: "Véhicule"
   }
+
+#La hiérarchie véhicule :  model > version
 
   dimension: model {
     type: string
     sql: ${TABLE}.model ;;
+    drill_fields: [version]
+    group_label: "Véhicule"
   }
 
   dimension: version {
     type: string
     sql: ${TABLE}.version ;;
+    group_label: "Véhicule"
   }
+
+#La hiérarchie motorisation: fuel_type > engine
 
   dimension: fuel_type {
     type: string
     sql: ${TABLE}.fuel_type ;;
+    drill_fields: [engine]
+    group_label: "Motorisation"
   }
 
   dimension: engine {
     type: string
     sql: ${TABLE}.engine ;;
+    group_label: "Motorisation"
   }
 
   dimension: dealer_name {
@@ -86,4 +101,32 @@ view: vin_data {
       order_date
     ]
   }
+
+
+  #Stock = invoice_date - order_date#
+
+  dimension: Stock {
+    type: number
+    sql:
+    DATE_DIFF(${invoice_date},${order_date},DAY);;
+  }
+
+  measure: avg_stock{
+    type: average
+    sql:  ${Stock}  ;;
+  }
+
+#Taux de marge = marginal_profit / (catalogue_price - client_discount)#
+
+
+  measure:Taux_de_marge{
+    type: number
+value_format_name: "percent_0"
+    sql:
+    ${marginal_profit} / nullif((${catalogue_price} - ${client_discount}),0);;
+  }
+
+
+
+
 }
