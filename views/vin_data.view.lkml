@@ -113,6 +113,7 @@ view: vin_data {
 
   measure: avg_stock{
     type: average
+
     sql:  ${Stock}  ;;
   }
 
@@ -121,12 +122,10 @@ view: vin_data {
 
   measure:Taux_de_marge{
     type: number
-value_format_name: "percent_0"
+    value_format_name: "percent_0"
     sql:
     ${marginal_profit} / nullif((${catalogue_price} - ${client_discount}),0);;
   }
-
-
 
 
 }
